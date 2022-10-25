@@ -2,9 +2,14 @@ package com.RestfulWebServices.RestfulWebServices.Employee;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class EmployeeController {
@@ -15,11 +20,15 @@ public class EmployeeController {
     //GET REQUEST {for  particular employee}
 
     @GetMapping("/employees/{id}")
-    public Employee retrieveUser(@PathVariable int id) {
+    public EntityModel<Employee> retrieveUser(@PathVariable int id) {
         Employee employee=service.findOne(id);
         if(employee==null)
             throw new ResourceNotFoundException("id:"+id);
-        return employee;
+        EntityModel<Employee> entityModel=EntityModel.of(employee);
+        WebMvcLinkBuilder link =  linkTo(methodOn(this.getClass()).retrieveAllEmployees());
+        entityModel.add(link.withRel("all-emloyees"));
+
+        return entityModel;
     }
     //GET REQUEST
     @GetMapping("/employees")
