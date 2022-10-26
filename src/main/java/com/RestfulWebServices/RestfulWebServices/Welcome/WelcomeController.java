@@ -21,6 +21,11 @@ public class WelcomeController {
    {
        return "Welcome to Spring Boot";
    }
+    @GetMapping(path="/username")
+    public String  user()
+    {
+        return "Hello "+messageSource.getMessage("username.message",null,Locale.ENGLISH)+"!";
+    }
    @GetMapping(path="/welcome-internationalized")
     public String welcomeInternationalized()
    {
